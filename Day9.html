@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Day9.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css"
+        integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="weather">
+        <input type="text" placeholder="Search..." class="input-search" />
+        <div class="content">
+            <h1 class="name">
+                <span class="city"></span>
+                <span>,</span>
+                <span class="country"></span>
+            </h1>
+            <p class="time"></p>
+            <div class="temperature">
+                <span class="value"></span>
+                <span><sup>o</sup>C</span>
+            </div>
+            <div class="short-desc"></div>
+            <div class="more-desc">
+                <div class="visibility">
+                    <i class="far fa-eye"></i>
+                    <span></span>
+                </div>
+                <div class="wind">
+                    <i class="fas fa-wind"></i>
+                    <span></span>
+                </div>
+                <div class="cloud">
+                    <i class="fas fa-cloud-sun"></i>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+       const input = document.querySelector('.input-search')
+
+const changeWeatherUI = (weather) => {
+  const { name, sys, weather: [{ main }], main: { temp }, visibility, wind, clouds } = weather
+  document.querySelector('.name .city').innerHTML = name
+  document.querySelector('.name .country').innerHTML = sys.country
+  document.querySelector('.time').innerHTML = new Date().toLocaleString()
+  document.querySelector('.temperature .value').innerHTML = Math.round(temp)
+  document.querySelector('.short-desc').innerHTML = main
+  document.body.className = temp >= 18 ? 'hot' : 'cold'
+  document.querySelector('.visibility span').innerHTML = visibility + ' (m)'
+  document.querySelector('.wind span').innerHTML = wind.speed + ' (m/s)'
+  document.querySelector('.cloud span').innerHTML = clouds.all + ' (%)'
+}
+
+input.addEventListener('keyup', (e) => {
+  if (e.keyCode === 13) {
+    const city = input.value.trim() ?? 'hue'
+    getWeather(city)
+  }
+})
+
+const getWeather = async (city) => {
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=d78fd1588e1b7c0c2813576ba183a667`
+  const res = await fetch(url)
+  const weather = await res.json()
+  changeWeatherUI(weather)
+}
+
+getWeather('hue')
+    </script>
+</body>
+
+</html>
